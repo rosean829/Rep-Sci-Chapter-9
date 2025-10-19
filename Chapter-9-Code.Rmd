@@ -1,30 +1,115 @@
 ---
 title: "Chapter-9-Code"
 author: "Rose An, Michael Krzywicki"
-date: "2025-10-12"
-output: html_document
+date: "`r Sys.Date()`"
+output: 
+  bookdown::html_document2:
+    toc: TRUE
+link-citations: yes
+fontsize: 12pt
+# bibliography: 
+# csl: 
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r packages, echo = FALSE, warning = FALSE, include = FALSE}
+###~~~
+# Load R packages
+###~~~
+#Create a vector w/ the required R packages
+# --> If you have a new dependency, don't forget to add it in this vector
+pkg <- c("knitr", "rmarkdown", "bookdown", "formattable", "kableExtra", "dplyr", "magrittr", "prettydoc", "htmltools", "knitcitations", "bibtex", "devtools")
+
+##~~~
+#2. Check if pkg are already installed on your computer
+##~~~
+print("Check if packages are installed")
+#This line below outputs a list of packages that are not installed. Which ones of the packages above are installed in computer, print packages that are not installed. Should print 0.
+new.pkg <- pkg[!(pkg %in% installed.packages())]
+
+##~~~
+#3. Install missing packages
+##~~~
+# Use an if/else statement to check whether packages have to be installed
+# WARNING: If your target R package is not deposited on CRAN then you need to adjust code/function
+if(length(new.pkg) > 0){
+  print(paste("Install missing package(s):", new.pkg, sep=' '))
+  install.packages(new.pkg, dependencies = TRUE)
+}else{
+  print("All packages are already installed!")
+}
+
+##~~~
+#4. Load all required packages
+##~~~
+print("Load packages and return status")
+#Here we use the sapply() function to require all the packages
+# To know more about the function type ?sapply() in R console
+# Just an easier way to load all packages
+sapply(pkg, require, character.only = TRUE)
+# debug = right-pointing arrow next to code will load in console so you can go line by line and debug. pressing this also seemed to resolve the CRAN needs a mirror error
+# Generate BibTex citation file for all loaded R packages
+# used to produce report Notice the syntax used here to
+# call the function
+knitr::write_bib(.packages(), file = )
+# The .packages() function returns invisibly the names of all packages loaded in the current R session (to see the output, use .packages(all.available = TRUE)). This ensures that all packages used in your code will have their citation entries written to the .bib file. This packages is then used in the Appendix to cite the code used
 ```
 
-## R Markdown
+```{r setup, include = FALSE, cache = FALSE, }
+### Load packages Add any packages specific to your code
+library("knitr")
+library("bookdown")
+### Chunk options: see http://yihui.name/knitr/options/ ###
+### Text output
+opts_chunk$set(echo = TRUE, warning = TRUE, message = TRUE, include = TRUE)
+## Code formatting
+opts_chunk$set(tidy = TRUE, tidy.opts = list(blank = FALSE, width.cutoff = 60),
+    highlight = TRUE)
+## Code caching
+opts_chunk$set(cache = 2, cache.path = "cache/")
+## Plot output The first dev is the master for the output
+## document
+opts_chunk$set(fig.path = "Figures_MS/", dev = c("png", "pdf"),
+    dpi = 300)
+## Figure positioning
+opts_chunk$set(fig.pos = "H")
+```
+# Bioinformatics Tutorial: Ch. 9 Statistical Modeling and KnitR
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+# Download Data
+Download data from google drive. This data is about x. We are doing x statistical analysis on this data. This will be done by 
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+# Step 1
 
-```{r cars}
-summary(cars)
+
+# References
+
+<div id="refs"></div>
+
+
+# (APPENDIX) Appendices {-}
+
+# Appendix 1
+
+Citations of all R packages used to generate this report. Reads and prints citations stored in packages.bib
+```{r generateBibliography, results = "asis", echo = FALSE, warning = FALSE, message = FALSE}
+### Load R package
+library("knitcitations")
+### Process and print citations in packages.bib Clear all
+### bibliography that could be in the cash
+cleanbib()
+# Set pandoc as the default output option for bib
+options(citation_format = "pandoc")
+# Read and print bib from file
+# read.bibtex(file = )
 ```
 
-## Including Plots
+# Appendix 2
 
-You can also embed plots, for example:
+Version information about R, the operating system (OS) and attached or R loaded packages. This appendix was generated using `sessionInfo()`.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+# Load and provide all packages and versions
+sessionInfo()
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
