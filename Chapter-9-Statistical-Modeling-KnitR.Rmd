@@ -1,5 +1,5 @@
 ---
-title: "Chapter-9-Code"
+title: "Ch. 9 Statistical Modeling and KnitR"
 author: "Rose An, Michael Krzywicki"
 date: "`r Sys.Date()`"
 output: 
@@ -73,12 +73,26 @@ opts_chunk$set(fig.path = "Figures_MS/", dev = c("png", "pdf"),
 ## Figure positioning
 opts_chunk$set(fig.pos = "H")
 ```
-# Bioinformatics Tutorial: Ch. 9 Statistical Modeling and KnitR
+# Aim
+
+# Introduction
+Session 1 and 2
+
+# Learning Outcomes
+1. Dynamically connect data gathering and source code to markdown documents.
+2. Setup pipeline to rerun analysis and present results whenever compiled. 
+3. Keep markdown documents up to date/reflect any changes made to data or analysis in source code files. 
 
 # Download Data
 Download data from google drive. This data is about x. We are doing x statistical analysis on this data. This will be done by 
 
 # Step 1
++ Identify appropriate distribution for categorical data
++ Make simulated data set
++ Define distribution
++ Define sample size
++ Define variance
++ Fit model in brms
 
 
 # References
