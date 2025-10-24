@@ -84,7 +84,7 @@ Session 1 and 2
 3. Keep markdown documents up to date/reflect any changes made to data or analysis in source code files. 
 
 # Download Data
-Download data from google drive. This is a dataset of "encounter rates" calculated from eBird data, which are calculated from the percentage of checklists that include a particular species in a given area. This data has been generated for the United States, and Mike is getting ready to do encounter rates for species in Sonora, Mexico that are also found in Idaho. 
+Download data from google drive. This is a dataset of "encounter rates" calculated from eBird data, which are calculated from the percentage of checklists that include a particular species in a given area. This data has been generated for the United States, and Mike is getting ready to do encounter rates for species in Sonora, Mexico that are also found in Idaho. Doing one more github test to see if I figured out the commit issue.
 
 # Step 1
 + Identify appropriate distribution for categorical data
