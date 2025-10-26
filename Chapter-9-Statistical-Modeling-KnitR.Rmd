@@ -5,6 +5,7 @@ date: "`r Sys.Date()`"
 output: 
   bookdown::html_document2:
     toc: TRUE
+    toc_float: TRUE
 link-citations: yes
 fontsize: 12pt
 # bibliography: 
