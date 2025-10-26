@@ -11,14 +11,35 @@ fontsize: 12pt
 # bibliography: 
 # csl: 
 ---
+# Introduction
+In this tutorial, we will learn how to set up a reproducible R Markdown document for statistical analysis/modeling. On Tuesday, we will ensure that everyone has downloaded the right data and packages, revisit chunk commands, and revisit inline coding. On Thursday, we will 
 
-```{r packages, echo = FALSE, warning = FALSE, include = FALSE}
+## Aim
+We will learn how to dynamically connect data gathering and source code to markdown documents, setup pipeline to rerun analysis and present results whenever compiled, and keep markdown documents up to date and reflecting changes made to the data or analysis in source code files.
+
+# Learning Outcomes
+1. Identify the correct chunk commands to use in different situations.
+2. Understand how to use inline code to dynamically report variables in your text.
+3. Dynamically include locally sourced modular analysis
+4. Dynamically include url-sourced modular analysis
+5. Analyze data within a code chunk
+6. Ensure results are reproducibly random
+7. Understand caching.
+
+# Data
+Download data from google drive. This is a dataset of "encounter rates" calculated from eBird data, which are calculated from the percentage of checklists that include a particular species in a given area. This data has been generated for the United States, and Mike is getting ready to do encounter rates for species in Sonora, Mexico that are also found in Idaho. 
+
+# Packages
+Make sure you have the following packages: "knitr", "rmarkdown", "bookdown", "formattable", "kableExtra", "dplyr", "magrittr", "prettydoc", "htmltools", "knitcitations", "bibtex", "devtools", "tidyverse"
+Not sure we'll actually need all this.
+
+```{r packages, echo = TRUE, warning = FALSE, include = FALSE}
 ###~~~
 # Load R packages
 ###~~~
 #Create a vector w/ the required R packages
 # --> If you have a new dependency, don't forget to add it in this vector
-pkg <- c("knitr", "rmarkdown", "bookdown", "formattable", "kableExtra", "dplyr", "magrittr", "prettydoc", "htmltools", "knitcitations", "bibtex", "devtools")
+pkg <- c("knitr", "rmarkdown", "bookdown", "formattable", "kableExtra", "dplyr", "magrittr", "prettydoc", "htmltools", "knitcitations", "bibtex", "devtools", "tidyverse")
 
 ##~~~
 #2. Check if pkg are already installed on your computer
@@ -74,28 +95,35 @@ opts_chunk$set(fig.path = "Figures_MS/", dev = c("png", "pdf"),
 ## Figure positioning
 opts_chunk$set(fig.pos = "H")
 ```
-# Aim
 
-# Introduction
-Session 1 and 2
+# Identify the correct chunk commands to use in different situations.
+What do the chunk commands do:
 
-# Learning Outcomes
-1. Dynamically connect data gathering and source code to markdown documents.
-2. Setup pipeline to rerun analysis and present results whenever compiled. 
-3. Keep markdown documents up to date/reflect any changes made to data or analysis in source code files. 
+## Thought Excercise:
+Take 5 minutes to discuss with the person sitting next to you. Given the same chunk of analysis, how would you set up your chunk commands when the document is being sent to your advisor for review versus being sent to a journal for publication?
 
-# Download Data
-Download data from google drive. This is a dataset of "encounter rates" calculated from eBird data, which are calculated from the percentage of checklists that include a particular species in a given area. This data has been generated for the United States, and Mike is getting ready to do encounter rates for species in Sonora, Mexico that are also found in Idaho. Doing one more github test to see if I figured out the commit issue.
+# Understand how to use inline code to dynamically report variables in your text.
 
-# Step 1
+# Dynamically include locally sourced modular analysis
+
+# Dynamically include url-sourced modular analysis
+
+# Analyze data within a code chunk
+
+# Ensure results are reproducibly random
+Set.seed explanation
+## Challenge:
+You and the person next to you use the same distribution variables but diff vs. same set.seed. Do you get the same result? What about when you use the same set.seed? Insert set.seeds here.
+
+# Understand caching.
+
+# Misc notes:
 + Identify appropriate distribution for categorical data
 + Make simulated data set
 + Define distribution
 + Define sample size
 + Define variance
 + Fit model in brms
-
-
 
 # References
 
