@@ -30,11 +30,54 @@ Through this tutorial, students will learn to:
 5. Run computationally intensive analysis efficiently.
 
 # Data
-Download data from google drive. This is a dataset of "encounter rates" calculated from eBird data, which are calculated from the percentage of checklists that include a particular species in a given area. This data has been generated for the United States, and Mike is getting ready to do encounter rates for species in Sonora, Mexico that are also found in Idaho [@Schuetz_and_Johnston_2019]. 
+Download data from google drive. For this chapter, we will be working with a couple of datasets. Mike is working on consolidating some different exploratory analyses he did at different times over the last year. He wants to get them in the same place and make sure that they are reproducible. We'll start with a dataset of "encounter rates" calculated from eBird data, which are calculated as the percentage of checklists that include a particular species in a given area [@Schuetz_and_Johnston_2019]. This data has been generated for the United States by state, and Mike is getting ready to do encounter rates for species in Sonora, Mexico that are also found in Idaho . Before digging into the eBird data for Sonora, Mike wanted to get to know the dataset for Idaho so that he knows what species to look for. Let's get that data ready. 
+
+#Load Data 
+
+```{r}
+library(tidyverse)
+
+
+state_enc_rate <- read.csv("state.level.enc.rate.csv")
+
+view(state_enc_rate)
+
+#Get rid of uneccessary columns
+state_enc_rate_clean <- state_enc_rate %>%
+  select(
+    -query.volume.state #not needed for analysis
+  )
+
+view(state_enc_rate_clean)
+
+#filter to just Idaho
+state_enc_rate_clean_filtered <- state_enc_rate_clean %>%
+  filter(
+    state == "Idaho",
+    
+  )
+
+view(state_enc_rate_clean_filtered)
+
+#get rid of species with no encounter rate
+ID_enc_rate <- state_enc_rate_clean_filtered %>%
+  filter(encounter.state.normalized!=0
+  )
+
+#get ride of encounter rates below 50
+ID_enc_rate <- ID_enc_rate %>%
+  filter(encounter.state.normalized > 50)
+
+view(ID_enc_rate)
+
+ 
+```
 
 # Packages
 Make sure you have the following packages: "knitr", "rmarkdown", "bookdown", "formattable", "kableExtra", "dplyr", "magrittr", "prettydoc", "htmltools", "knitcitations", "bibtex", "devtools", "tidyverse"
-Not sure we'll actually need all this. Below are the code chunks for loading packages and setting up the document from Ch. 2:
+Not sure we'll actually need all this. Below are the code chunks for loading packages and setting up the document from
+
+Ch. 2:
 
 ```{r packages, results = 'hide', warning = FALSE}
 ###~~~
@@ -97,15 +140,38 @@ opts_chunk$set(fig.path = "Figures_MS/", dev = c("png", "pdf"),
 opts_chunk$set(fig.pos = "H")
 ```
 
-<<<<<<< HEAD
+
 # Identify the correct chunk commands to use in different situations.
-Although dynamically linking source code to markdown documents is the main goal of this chapter, sometimes it makes sense to include short code chunks directly into your markdown document. There are a variety of customizable options on how the code and its output are display in the final knitted document.
+Although dynamically linking source code to markdown documents is the main goal of this chapter, sometimes it makes sense to include short code chunks directly into your markdown document. There are a variety of customizable options on how the code and its output are display in the final knitted document. We use code chunk arguments from the knitr package to choose the parts of our code chunks that are outputted in the final html document.
+
+
+#Load Data 
+
+First we are going to to do a little bit more data transformation to make a couple of objects of the Idaho encounter rate data grouped taxonomically for some descriptive statistics we will use later.
+
+```{r}
+
+
+#Pull passerines from ID encounter rates list
+passerine_enc_rate <- ID_enc_rate %>%
+  filter(common.name %in% c("American robin", "bank swallow", "black-billed magpie", "black-headed grosbeak", "Brewer's blackbird", "Bullock's oriole", "Cassin's finch", "Cassin's vireo", "cedar waxwing", "cliff swallow", "dark-eyed junco", "dusky flycatcher", "European starling", "evening grosbeak", "Hammond's flycatcher", "house finch", "lazuli bunting", "MacGillivray's warbler", "mountain chickadee", "northern rough-winged swallow", "olive-sided flycatcher", "pine siskin", "red crossbill", "red-winged blackbird", "sage thrasher", "song sparrow", "western kingbird", "western tanager", "western wood-pewee", "willow flycatcher", "yellow warbler"))
+
+waterfowl_enc_rate <- ID_enc_rate %>%
+  filter(common.name %in% c("American coot", "American wigeon", "cinnamon teal", "common goldeneye", "common merganser", "mallard", "ring-necked duck", "western grebe"))
+
+```
+
+
+
+# Identify the correct chunk commands to use in different situations.
+
 
 What do the chunk commands do:
-=======
+
 # Set up a chunk's outputs correctly.
 We use code chunk arguments from the knitr package to choose the parts of our code chunks that are outputted in the final html document.
->>>>>>> 76440cdb334f0b4e11941df55a27d1a11f6f6b92
+
+
 
 Code chunk arguments:
 
@@ -115,25 +181,35 @@ Code chunk arguments:
 + results = 'hide' hides results but not the code from the document
 + warning, message, error = FALSE hides warnings, messages, and error messages from the document
 
-<<<<<<< HEAD
-Sometimes you may want to have R code or output appear inline with the rest of the markdown document. These can be static or dynamic.
 
-* Static: When you want to display a line of code in the markdown document.
-
- ** Example: Here is a line of code from data prep for this lesson: `ID_enc_rate <- state_enc_rate_clean_filtered %>%
-  filter(encounter.state.normalized!=0
-  )`
-
-# Dynamically include locally sourced modular analysis
-=======
-For eval and echo, you can tell knitr which expressions in the chunk to include using numerical vectors. For example, eval = 1:2 will only include the 1st 2 expressions of code in the output document.
->>>>>>> 76440cdb334f0b4e11941df55a27d1a11f6f6b92
 
 ### Thought Excercise:
 Take 5 minutes to discuss with the person sitting next to you. Given the same chunk of analysis, how would you set up your chunk arguments when the document is being sent to your advisor for review versus being sent to a journal for publication? Then share with the class.
 
+# Dynamically include locally sourced modular analysis
+
+For eval and echo, you can tell knitr which expressions in the chunk to include using numerical vectors. For example, eval = 1:2 will only include the 1st 2 expressions of code in the output document.
+
+
+
+
+
+
+
+
+
 # Dynamically report variables in your text.
-Example of dynamic inline code pulling from two sources in the same sentence?
+Sometimes you may want to have R code or output appear inline with the rest of the markdown document. These can be static or dynamic.
+
+* **Static**: When you want to display a line of code in the markdown document.
+  * **Example**: Here is a line of code from data prep for this lesson: `ID_enc_rate <- state_enc_rate_clean_filtered %>%
+  filter(encounter.state.normalized!=0
+  )`
+
+- **Dynamic**: When you want to display output of a line of code inline with the rest of the markdown document.
+  - **Example**: The average encounter rate for the most commonly encountered passerines in Idaho is `r mean(passerine_enc_rate$encounter.state.normalized, na.rm = TRUE)`.
+
+
 
 # Source or code analysis through multiple methods.
 We will go over three ways to include analysis in your R Markdown document: locally sourced modular analysis, url-sourced modular analysis, and using a code chunk. We will also go over the scenarios in which you might use each method.
@@ -165,16 +241,69 @@ What code chunk arguments should we use if we want to figure to show up in the o
 # Ensure results are reproducibly random
 When an analysis produces simulations, a random number generator is generally used so that others can replicate your results. For this tutorial, we will do an exercise to learn the importance of using the set.seed command to ensure replicability.
 
-### Excercise:
+### Exercise:
 You and the person next to you use the same distribution variables but diff vs. same set.seed. Do you get the same result? What about when you use the same set.seed?  *Insert set.seeds here.*
 
-<<<<<<< HEAD
+```{r, cache=TRUE}
+# Set seed as 125
+set.seed(125)
 
-=======
+# Draw 1000 numbers
+Draw2 <- rnorm(1000, mean = 0, sd = 2) # Summarize Draw1
+
+# Draw 1000 other numbers
+Draw1 <- rnorm(1000, mean=5, sd=1.5)
+
+summary(Draw2)
+
+plot(Draw2)
+
+plot(Draw1)
+
+model <- lm(Draw1~Draw2)
+
+plot(model)
+
+# Set seed as 150
+set.seed(150)
+
+# Draw 1000 numbers
+Draw3 <- rnorm(1000, mean = 0, sd = 2) # Summarize Draw1
+
+# Draw 1000 other numbers
+Draw4 <- rnorm(1000, mean=5, sd=1.5)
+
+summary(Draw2)
+
+plot(Draw2)
+
+plot(Draw1)
+
+model1 <- lm(Draw3~Draw4)
+
+plot(model)
+
+# Save sample
+save(model, file = "model.RData")
+```
+
+
 # Run computationally intensive analysis efficiently.
 When an analysis is too computationally intensive, knowing how to use the cache functions from knitR is helpful. Caching a code chunk will store the results of its analysis in a cache folder.
 
 To cache a code chunk, use the argument `cache = TRUE`. This will ensure the chunk will only run if the chunk's contents or options change. 
+
+
+```{r Histogram}
+
+# Load Sample
+load(file = "model.RData" )
+
+summary(model)
+
+plot(model)
+```
+
 
 However, subsequent chunks will not be able to access objects created by the chunks or any packages loaded in it (all packages should be loaded in their own chunk anyways though), and the cached chunk will not run if a previous chunk with code it depended on changes. You can solve this last problem with the argument dependson. A chunk with the dependson argument will rerun if the specified chunk is also rerun. To specify a chunk, use a vector of their labels or their number order from the start of the document. For example, `dependson = c(2,3)` will rerun the cached chunk if the 2nd and 3rd chunks of the document are also rerun. You can also save objects created by a cached chunk to a separate RData file and load that in subsequent chunks with the load command.
 
@@ -183,14 +312,7 @@ Try `cache = TRUE` on the code chunk from earlier. Knit the document. What happe
 
 *should we try to do the rdata thing?*
 
-# Misc notes. dunno if we need to keep this:
-+ Identify appropriate distribution for categorical data
-+ Make simulated data set
-+ Define distribution
-+ Define sample size
-+ Define variance
-+ Fit model in brms
->>>>>>> 76440cdb334f0b4e11941df55a27d1a11f6f6b92
+
 
 # References
 
