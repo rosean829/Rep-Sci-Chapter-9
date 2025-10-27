@@ -97,12 +97,22 @@ opts_chunk$set(fig.pos = "H")
 ```
 
 # Identify the correct chunk commands to use in different situations.
+Although dynamically linking source code to markdown documents is the main goal of this chapter, sometimes it makes sense to include short code chunks directly into your markdown document. There are a variety of customizable options on how the code and its output are display in the final knitted document.
+
 What do the chunk commands do:
 
 ## Thought Excercise:
 Take 5 minutes to discuss with the person sitting next to you. Given the same chunk of analysis, how would you set up your chunk commands when the document is being sent to your advisor for review versus being sent to a journal for publication?
 
 # Understand how to use inline code to dynamically report variables in your text.
+
+Sometimes you may want to have R code or output appear inline with the rest of the markdown document. These can be static or dynamic.
+
+* Static: When you want to display a line of code in the markdown document.
+
+ ** Example: Here is a line of code from data prep for this lesson: `ID_enc_rate <- state_enc_rate_clean_filtered %>%
+  filter(encounter.state.normalized!=0
+  )`
 
 # Dynamically include locally sourced modular analysis
 
@@ -117,13 +127,7 @@ You and the person next to you use the same distribution variables but diff vs. 
 
 # Understand caching.
 
-# Misc notes:
-+ Identify appropriate distribution for categorical data
-+ Make simulated data set
-+ Define distribution
-+ Define sample size
-+ Define variance
-+ Fit model in brms
+
 
 # References
 
