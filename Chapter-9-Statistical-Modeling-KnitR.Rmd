@@ -79,7 +79,7 @@ knitr::write_bib(.packages(), file = "packages.bib")
 ```
 
 # Data
-Download data from google drive. For this chapter, we will be working with a couple of datasets. Mike is working on consolidating some different exploratory analyses he did at different times over the last year. He wants to get them in the same place and make sure that they are reproducible. We'll start with a dataset of "encounter rates" calculated from eBird data, which are calculated as the percentage of checklists that include a particular species in a given area [@Schuetz_and_Johnston_2019]. This data has been analyzed for the United States by state, and Mike is getting ready to do encounter rates for species in Sonora, Mexico that are also found in Idaho. Before digging into the eBird data for Sonora, Mike wanted to get to know the dataset for Idaho so that he knows what species to look for in the Sonora data. Let's get that data ready. 
+Download data from google drive. For this chapter, we will be working with a couple of datasets. Mike is working on consolidating some different exploratory analyses he did at different times over the last year. He wants to get them in the same place and make sure that they are reproducible. One set of data comes from the supplementary material of a paper. It is a csv file that was pulled from one of the author of the paper's github. The other dataset came from the r package `ebirdst`, which interfaces with data from the community science platform eBird. We'll start with a dataset of "encounter rates" calculated from eBird data, which are calculated as the percentage of checklists that include a particular species in a given area [@Schuetz_and_Johnston_2019]. This data has been analyzed for the United States by state, and Mike is getting ready to calculate encounter rates for species in Sonora, Mexico that are also found in Idaho. Before digging into the eBird data for Sonora, Mike wanted to get to know the dataset for Idaho so that he knows what species to look for in the Sonora data. Let's get that data ready. 
 
 #Load Data 
 
@@ -117,7 +117,8 @@ ID_enc_rate <- state_enc_rate_clean_filtered %>%
 ID_enc_rate <- ID_enc_rate %>%
   filter(encounter.state.normalized > 50)
 
-view(ID_enc_rate)
+#make a table for markdown output
+kable(ID_enc_rate)
 
  
 ```
@@ -146,7 +147,7 @@ opts_chunk$set(fig.pos = "H")
 Although dynamically linking source code to markdown documents is the main goal of this chapter, sometimes it makes sense to include short code chunks directly into your markdown document. There are a variety of customizable options on how the code and its output are display in the final knitted document. We use code chunk arguments from the knitr package to choose the parts of our code chunks that are outputted in the final html document.
 
 
-#Load Data 
+## Load Data 
 
 First we are going to to do a little bit more data transformation to make a couple of objects of the Idaho encounter rate data grouped taxonomically for some descriptive statistics we will use later.
 
@@ -164,7 +165,7 @@ waterfowl_enc_rate <- ID_enc_rate %>%
 
 
 
-# Identify the correct chunk commands to use in different situations.
+## Identify the correct chunk commands to use in different situations.
 
 
 What do the chunk commands do:
