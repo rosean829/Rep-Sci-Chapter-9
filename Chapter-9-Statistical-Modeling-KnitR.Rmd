@@ -8,32 +8,35 @@ output:
     toc_float: TRUE
 link-citations: yes
 fontsize: 12pt
-# bibliography: 
-# csl: 
+bibliography: Bibliography_Reproducible_Science_9.bib
+csl: AmJBot.csl
 ---
 # Introduction
-In this tutorial, we will learn how to set up a reproducible R Markdown document for statistical analysis/modeling. On Tuesday, we will ensure that everyone has downloaded the right data and packages, revisit chunk commands, and revisit inline coding. On Thursday, we will 
+In this tutorial, we will learn how to set up a R Markdown document for reproducible statistical analysis/modeling, primarily using functions and syntax from the KnitR package. On Tuesday, we will ensure that everyone has downloaded the right data and packages and go over code chunk setup and begin analysis?. On Thursday, we will learn different ways to source and code analysis chunks, how to ensure your analysis is reproducibly random, and how to efficiently run computationally-intensive analysis. 
 
 ## Aim
-We will learn how to dynamically connect data gathering and source code to markdown documents, setup pipeline to rerun analysis and present results whenever compiled, and keep markdown documents up to date and reflecting changes made to the data or analysis in source code files.
+We will learn how to dynamically connect data gathering and source code to markdown documents, setup pipelines to rerun analysis and present results whenever compiled, and keep markdown documents up to date and reflecting changes made to the data or analysis in source code files.
+
+## Why is it important?
+Coding is hard. It takes a long time, and you'll likely have to go back to the same analysis multiple times to tweak and change things. It is important to setup a good workflow early to ensure you're not scrambling to make your research reproducible at the end of the process. You'll be saving yourself a lot of time if your analysis is reproducible and your results presented every time you knit your document.
 
 # Learning Outcomes
-1. Identify the correct chunk commands to use in different situations.
-2. Understand how to use inline code to dynamically report variables in your text.
-3. Dynamically include locally sourced modular analysis
-4. Dynamically include url-sourced modular analysis
-5. Analyze data within a code chunk
-6. Ensure results are reproducibly random
-7. Understand caching.
+Through this tutorial, students will learn to:
+
+1. Set up a chunk's outputs correctly.
+2. Dynamically report variables in text.
+3. Source or code analysis through multiple methods.
+4. Ensure results are reproducibly random.
+5. Run computationally intensive analysis efficiently.
 
 # Data
-Download data from google drive. This is a dataset of "encounter rates" calculated from eBird data, which are calculated from the percentage of checklists that include a particular species in a given area. This data has been generated for the United States, and Mike is getting ready to do encounter rates for species in Sonora, Mexico that are also found in Idaho. 
+Download data from google drive. This is a dataset of "encounter rates" calculated from eBird data, which are calculated from the percentage of checklists that include a particular species in a given area. This data has been generated for the United States, and Mike is getting ready to do encounter rates for species in Sonora, Mexico that are also found in Idaho [@Schuetz_and_Johnston_2019]. 
 
 # Packages
 Make sure you have the following packages: "knitr", "rmarkdown", "bookdown", "formattable", "kableExtra", "dplyr", "magrittr", "prettydoc", "htmltools", "knitcitations", "bibtex", "devtools", "tidyverse"
-Not sure we'll actually need all this.
+Not sure we'll actually need all this. Below are the code chunks for loading packages and setting up the document from Ch. 2:
 
-```{r packages, echo = TRUE, warning = FALSE, include = FALSE}
+```{r packages, results = 'hide', warning = FALSE}
 ###~~~
 # Load R packages
 ###~~~
@@ -72,14 +75,12 @@ sapply(pkg, require, character.only = TRUE)
 # Generate BibTex citation file for all loaded R packages
 # used to produce report Notice the syntax used here to
 # call the function
-knitr::write_bib(.packages(), file = )
+knitr::write_bib(.packages(), file = "packages.bib")
 # The .packages() function returns invisibly the names of all packages loaded in the current R session (to see the output, use .packages(all.available = TRUE)). This ensures that all packages used in your code will have their citation entries written to the .bib file. This packages is then used in the Appendix to cite the code used
 ```
 
-```{r setup, include = FALSE, cache = FALSE, }
-### Load packages Add any packages specific to your code
-library("knitr")
-library("bookdown")
+Setup Chunk Options:
+```{r setup, results = 'hide', cache = FALSE}
 ### Chunk options: see http://yihui.name/knitr/options/ ###
 ### Text output
 opts_chunk$set(echo = TRUE, warning = TRUE, message = TRUE, include = TRUE)
@@ -96,34 +97,143 @@ opts_chunk$set(fig.path = "Figures_MS/", dev = c("png", "pdf"),
 opts_chunk$set(fig.pos = "H")
 ```
 
+
+#Load Data 
+
+```{r}
+library(tidyverse)
+
+
+state_enc_rate <- read.csv("state.level.enc.rate.csv")
+
+view(state_enc_rate)
+
+#Get rid of uneccessary columns
+state_enc_rate_clean <- state_enc_rate %>%
+  select(
+    -query.volume.state #not needed for analysis
+  )
+
+view(state_enc_rate_clean)
+
+#filter to just Idaho
+state_enc_rate_clean_filtered <- state_enc_rate_clean %>%
+  filter(
+    state == "Idaho",
+    
+  )
+
+view(state_enc_rate_clean_filtered)
+
+#get rid of species with no encounter rate
+ID_enc_rate <- state_enc_rate_clean_filtered %>%
+  filter(encounter.state.normalized!=0
+  )
+
+#get ride of encounter rates below 50
+ID_enc_rate <- ID_enc_rate %>%
+  filter(encounter.state.normalized > 50)
+
+view(ID_enc_rate)
+
+#Pull passerines from this list
+passerine_enc_rate <- ID_enc_rate %>%
+  filter(common.name %in% c("American robin", "bank swallow", "black-billed magpie", "black-headed grosbeak", "Brewer's blackbird", "Bullock's oriole", "Cassin's finch", "Cassin's vireo", "cedar waxwing", "cliff swallow", "dark-eyed junco", "dusky flycatcher", "European starling", "evening grosbeak", "Hammond's flycatcher", "house finch", "laxuli bunting", "MacGillivray's warbler", "mountain chickadee", "northern rough-winged swallow", "olive-sided flycatcher", "pine siskin", "red crossbill", "red-winged blackbird", "sage thrasher", "song sparrow", "western kingbird", "western tanager", "western wood-pewee", "willow flycatcher", "yellow warbler"))
+```
+
+
+# Set up a chunk's outputs correctly.
+Although dynamically linking source code to markdown documents is the main goal of this chapter, sometimes it makes sense to include short code chunks directly into your markdown document. There are a variety of customizable options on how the code and its output are display in the final knitted document.We use code chunk arguments from the knitr package to choose the parts of our code chunks that are outputted in the final html document.
+
 # Identify the correct chunk commands to use in different situations.
+
+
 What do the chunk commands do:
 
-## Thought Excercise:
-Take 5 minutes to discuss with the person sitting next to you. Given the same chunk of analysis, how would you set up your chunk commands when the document is being sent to your advisor for review versus being sent to a journal for publication?
 
-# Understand how to use inline code to dynamically report variables in your text.
+Code chunk arguments:
 
-# Dynamically include locally sourced modular analysis
++ include = FALSE hides code and results from the output document (html in our case), but code will still run
++ eval = FALSE to include code in the document without running it
++ echo = FALSE hides code but not results from the document
++ results = 'hide' hides results but not the code from the document
++ warning, message, error = FALSE hides warnings, messages, and error messages from the document
 
-# Dynamically include url-sourced modular analysis
 
-# Analyze data within a code chunk
+
+
+
+### Thought Excercise:
+Take 5 minutes to discuss with the person sitting next to you. Given the same chunk of analysis, how would you set up your chunk arguments when the document is being sent to your advisor for review versus being sent to a journal for publication? Then share with the class.
+
+# Dynamically report variables in your text.
+Sometimes you may want to have R code or output appear inline with the rest of the markdown document. These can be static or dynamic.
+
+* Static: When you want to display a line of code in the markdown document.
+  * Example: Here is a line of code from data prep for this lesson: `ID_enc_rate <- state_enc_rate_clean_filtered %>%
+  filter(encounter.state.normalized!=0
+  )`
+
+* Dynamic: When you want to display output of a line of code inline with the rest of the markdown document.
+  * Example: The average encounter rate for the most commonly encountered passerines in Idaho is `r mean(passerine_enc_rate$encounter.state.normalized, na.rm = TRUE)`.
+
+
+# Source or code analysis through multiple methods.
+We will go over three ways to include analysis in your R Markdown document: locally sourced modular analysis, url-sourced modular analysis, and using a code chunk. We will also go over the scenarios in which you might use each method.
+
+## Locally sourced modular analysis
+You may have previously written code locally stored on your computer that you want to pull for an analysis. To do so, we will save that code in its own R file and use the source command from knitR to call it. This is most helpful in the early stages of your research, as this is not the best practice for ensuring reproducible science. 
+
+Use the argument `include = FALSE` to run the analysis and produce objects that can still be used by other code chunks but will not show up in the output document.
+
+*make a separate r file that calculates means of passerine encounter rates, then source it here.*
+
+## Url-sourced modular analysis
+Once you are further along in your research, you may want to make sure your file in publicly accessible to ensure reproducibility. You can host your file in a GitHub repository and use the source_url command from the devtools package to call it.
+
+We have set up a pre-made GitHub file for this section.
+
+*source from pre-made github file. pre-made file on shorebird encounter rate means*
+
+## Analyze data within a code chunk
+Lastly, the simplest way to include analysis is to analyze the data within a code chunk. This is the best method for reproducibility as all your analysis is in one document, making it easier for other to reuse your code.
+
+For this tutorial, we will create a code chunk with a simple analysis that will generate a figure comparing encounter rates between Idaho and Sonora. 
+
+### Challenge:
+What code chunk arguments should we use if we want to figure to show up in the output document but not the code?
+
+*Create figure comparing encounter rates between idaho and sonora. Ask students what the code chunk arguments should be.*
 
 # Ensure results are reproducibly random
-Set.seed explanation
-## Challenge:
-You and the person next to you use the same distribution variables but diff vs. same set.seed. Do you get the same result? What about when you use the same set.seed? Insert set.seeds here.
+When an analysis produces simulations, a random number generator is generally used so that others can replicate your results. For this tutorial, we will do an exercise to learn the importance of using the set.seed command to ensure replicability.
 
-# Understand caching.
+### Excercise:
+You and the person next to you use the same distribution variables but diff vs. same set.seed. Do you get the same result? What about when you use the same set.seed?  *Insert set.seeds here.*
 
-# Misc notes:
+<<<<<<< HEAD
+# Run computationally intensive analysis efficiently.
+When an analysis is too computationally intensive, knowing how to use the cache functions from knitR is helpful. Caching a code chunk will store the results of its analysis in a cache folder.
+
+To cache a code chunk, use the argument `cache = TRUE`. This will ensure the chunk will only run if the chunk's contents or options change. 
+
+However, subsequent chunks will not be able to access objects created by the chunks or any packages loaded in it (all packages should be loaded in their own chunk anyways though), and the cached chunk will not run if a previous chunk with code it depended on changes. You can solve this last problem with the argument dependson. A chunk with the dependson argument will rerun if the specified chunk is also rerun. To specify a chunk, use a vector of their labels or their number order from the start of the document. For example, `dependson = c(2,3)` will rerun the cached chunk if the 2nd and 3rd chunks of the document are also rerun. You can also save objects created by a cached chunk to a separate RData file and load that in subsequent chunks with the load command.
+
+### Excercise
+Try `cache = TRUE` on the code chunk from earlier. Knit the document. What happens? Run the document again. What happens?
+
+*should we try to do the rdata thing?*
+
+# Misc notes. dunno if we need to keep this:
 + Identify appropriate distribution for categorical data
 + Make simulated data set
 + Define distribution
 + Define sample size
 + Define variance
 + Fit model in brms
+=======
+
+>>>>>>> 01e3339 (committing so I can pull and make sure I'm on the most recent version)
 
 # References
 
@@ -135,7 +245,8 @@ You and the person next to you use the same distribution variables but diff vs. 
 # Appendix 1
 
 Citations of all R packages used to generate this report. Reads and prints citations stored in packages.bib
-```{r generateBibliography, results = "asis", echo = FALSE, warning = FALSE, message = FALSE}
+
+```{r generateBibliography, results = "asis", warning = FALSE, message = FALSE}
 ### Load R package
 library("knitcitations")
 ### Process and print citations in packages.bib Clear all
@@ -144,7 +255,7 @@ cleanbib()
 # Set pandoc as the default output option for bib
 options(citation_format = "pandoc")
 # Read and print bib from file
-# read.bibtex(file = )
+read.bibtex(file = "packages.bib")
 ```
 
 # Appendix 2
