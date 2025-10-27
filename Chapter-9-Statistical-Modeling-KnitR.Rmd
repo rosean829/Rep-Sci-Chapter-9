@@ -29,55 +29,11 @@ Through this tutorial, students will learn to:
 4. Ensure results are reproducibly random.
 5. Run computationally intensive analysis efficiently.
 
-# Data
-Download data from google drive. For this chapter, we will be working with a couple of datasets. Mike is working on consolidating some different exploratory analyses he did at different times over the last year. He wants to get them in the same place and make sure that they are reproducible. We'll start with a dataset of "encounter rates" calculated from eBird data, which are calculated as the percentage of checklists that include a particular species in a given area [@Schuetz_and_Johnston_2019]. This data has been generated for the United States by state, and Mike is getting ready to do encounter rates for species in Sonora, Mexico that are also found in Idaho . Before digging into the eBird data for Sonora, Mike wanted to get to know the dataset for Idaho so that he knows what species to look for. Let's get that data ready. 
-
-#Load Data 
-
-```{r}
-library(tidyverse)
-
-
-state_enc_rate <- read.csv("state.level.enc.rate.csv")
-
-view(state_enc_rate)
-
-#Get rid of uneccessary columns
-state_enc_rate_clean <- state_enc_rate %>%
-  select(
-    -query.volume.state #not needed for analysis
-  )
-
-view(state_enc_rate_clean)
-
-#filter to just Idaho
-state_enc_rate_clean_filtered <- state_enc_rate_clean %>%
-  filter(
-    state == "Idaho",
-    
-  )
-
-view(state_enc_rate_clean_filtered)
-
-#get rid of species with no encounter rate
-ID_enc_rate <- state_enc_rate_clean_filtered %>%
-  filter(encounter.state.normalized!=0
-  )
-
-#get ride of encounter rates below 50
-ID_enc_rate <- ID_enc_rate %>%
-  filter(encounter.state.normalized > 50)
-
-view(ID_enc_rate)
-
- 
-```
 
 # Packages
 Make sure you have the following packages: "knitr", "rmarkdown", "bookdown", "formattable", "kableExtra", "dplyr", "magrittr", "prettydoc", "htmltools", "knitcitations", "bibtex", "devtools", "tidyverse"
 Not sure we'll actually need all this. Below are the code chunks for loading packages and setting up the document from
 
-Ch. 2:
 
 ```{r packages, results = 'hide', warning = FALSE}
 ###~~~
@@ -121,6 +77,51 @@ sapply(pkg, require, character.only = TRUE)
 knitr::write_bib(.packages(), file = "packages.bib")
 # The .packages() function returns invisibly the names of all packages loaded in the current R session (to see the output, use .packages(all.available = TRUE)). This ensures that all packages used in your code will have their citation entries written to the .bib file. This packages is then used in the Appendix to cite the code used
 ```
+
+# Data
+Download data from google drive. For this chapter, we will be working with a couple of datasets. Mike is working on consolidating some different exploratory analyses he did at different times over the last year. He wants to get them in the same place and make sure that they are reproducible. We'll start with a dataset of "encounter rates" calculated from eBird data, which are calculated as the percentage of checklists that include a particular species in a given area [@Schuetz_and_Johnston_2019]. This data has been analyzed for the United States by state, and Mike is getting ready to do encounter rates for species in Sonora, Mexico that are also found in Idaho. Before digging into the eBird data for Sonora, Mike wanted to get to know the dataset for Idaho so that he knows what species to look for in the Sonora data. Let's get that data ready. 
+
+#Load Data 
+
+```{r}
+library(tidyverse)
+
+#load csv file of data
+state_enc_rate <- read.csv("state.level.enc.rate.csv")
+
+view(state_enc_rate)
+
+#Get rid of uneccessary columns
+state_enc_rate_clean <- state_enc_rate %>%
+  select(
+    -query.volume.state #not needed for analysis
+  )
+
+view(state_enc_rate_clean)
+
+#filter to just Idaho
+state_enc_rate_clean_filtered <- state_enc_rate_clean %>%
+  filter(
+    state == "Idaho",
+    
+  )
+
+view(state_enc_rate_clean_filtered)
+
+#get rid of species with no encounter rate
+ID_enc_rate <- state_enc_rate_clean_filtered %>%
+  filter(encounter.state.normalized!=0
+  )
+
+#get ride of encounter rates below 50 to focus on "commonly encou
+ID_enc_rate <- ID_enc_rate %>%
+  filter(encounter.state.normalized > 50)
+
+view(ID_enc_rate)
+
+ 
+```
+
 
 Setup Chunk Options:
 ```{r setup, results = 'hide', cache = FALSE}
