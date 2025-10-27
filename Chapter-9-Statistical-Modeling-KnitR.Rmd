@@ -89,8 +89,14 @@ library(tidyverse)
 #load csv file of data
 state_enc_rate <- read.csv("state.level.enc.rate.csv")
 
-view(state_enc_rate)
+summary(state_enc_rate)
+head(state_enc_rate)
 
+```
+
+There is more data in this dataframe than we need, so lets do some transformation to get the data where we want it. Specifically, we are going to drop a column we don't need, filter the data down to just Idaho, and filter for species with encounter rates higher than 50%. 
+
+```{r}
 #Get rid of uneccessary columns
 state_enc_rate_clean <- state_enc_rate %>%
   select(
@@ -116,6 +122,9 @@ ID_enc_rate <- state_enc_rate_clean_filtered %>%
 #get ride of encounter rates below 50 to focus on "commonly encou
 ID_enc_rate <- ID_enc_rate %>%
   filter(encounter.state.normalized > 50)
+
+#check size of final dataframe
+summary(ID_enc_rate)
 
 #make a table for markdown output
 kable(ID_enc_rate)
