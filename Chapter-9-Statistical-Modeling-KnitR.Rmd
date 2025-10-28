@@ -255,7 +255,7 @@ You may have previously written code locally stored on your computer that you wa
 
 ```{r}
 # Run main analysis
-source("Sonora_AMAV_migration_chron.R")
+source("03_linked_scripts/Sonora_AMAV_migration_chron.R")
 
 AMAV_SO
 ```
