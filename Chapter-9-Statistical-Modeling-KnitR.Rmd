@@ -104,7 +104,7 @@ Download data from google drive. For this chapter, we will be working with a cou
 library(tidyverse)
 
 #load csv file of data
-state_enc_rate <- read.csv("state.level.enc.rate.csv")
+state_enc_rate <- read.csv("01_raw_data/state.level.enc.rate.csv")
 
 summary(state_enc_rate)
 head(state_enc_rate)
@@ -113,7 +113,7 @@ head(state_enc_rate)
 
 There is more data in this dataframe than we need, so lets do some transformation to get the data where we want it. Specifically, we are going to drop a column we don't need, filter the data down to just Idaho, and filter for species with encounter rates higher than 50%. 
 
-```{r}
+```{r, warning = FALSE}
 #Get rid of uneccessary columns
 state_enc_rate_clean <- state_enc_rate %>%
   dplyr::select(
@@ -136,7 +136,7 @@ ID_enc_rate <- state_enc_rate_clean_filtered %>%
   filter(encounter.state.normalized!=0
   )
 
-#get ride of encounter rates below 50 to focus on "commonly encou
+#get ride of encounter rates below 50 to focus on commonly encou
 ID_enc_rate <- ID_enc_rate %>%
   filter(encounter.state.normalized > 50)
 
@@ -145,6 +145,11 @@ summary(ID_enc_rate)
 
 #make a table for markdown output
 kable(ID_enc_rate)
+
+#create clean data folder and save new data file
+dir.create("02_Clean_data", showWarnings = FALSE)
+write.csv(ID_enc_rate, file = "02_Clean_data/ID_enc_rate.csv",
+    row.names = FALSE)
 
  
 ```
@@ -170,7 +175,7 @@ For eval and echo, you can tell knitr which expressions in the chunk to include 
 Take 5 minutes to discuss with the person sitting next to you. Given the same chunk of analysis, how would you set up your chunk arguments when the document is being sent to your advisor for review versus being sent to a journal for publication? Then share with the class.
 
 ## Analysis in a code chunk
-For this tutorial, we will create a code chunk with a simple analysis that will generate a figure comparing encounter rates between Idaho and Sonora. 
+For this tutorial, we will create a code chunk to compare the mean encounter rate of songbirds and waterfowl in the Idaho dataset. 
 
 ### Challenge:
 What code chunk arguments should we use if we want to figure to show up in the output document but not the code?
@@ -247,6 +252,14 @@ We will go over two other ways to include analysis in your R Markdown document: 
 
 ## Locally sourced modular analysis
 You may have previously written code locally stored on your computer that you want to pull for an analysis. To do so, we will save that code in its own R file and use the source command from knitR to call it. This is most helpful in the early stages of your research, as this is not the best practice for ensuring reproducible science. 
+
+```{r}
+# Run main analysis
+source("Sonora_AMAV_migration_chron.R")
+
+AMAV_SO
+```
+
 
 Use the argument `include = FALSE` to run the analysis and produce objects that can still be used by other code chunks but will not show up in the output document.
 
