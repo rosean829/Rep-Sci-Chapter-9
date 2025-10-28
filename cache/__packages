@@ -20,3 +20,12 @@ purrr
 stringr
 forcats
 lubridate
+ebirdst
+sf
+sp
+raster
+terra
+patchwork
+tigris
+rnaturalearth
+rnaturalearthhires
