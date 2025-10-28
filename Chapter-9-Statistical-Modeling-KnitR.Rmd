@@ -29,12 +29,11 @@ Through this tutorial, students will learn to:
 4. Ensure results are reproducibly random.
 5. Run computationally intensive analysis efficiently.
 
-# Data
-Download data from google drive. This is a dataset of "encounter rates" calculated from eBird data, which are calculated from the percentage of checklists that include a particular species in a given area. This data has been generated for the United States, and Mike is getting ready to do encounter rates for species in Sonora, Mexico that are also found in Idaho [@Schuetz_and_Johnston_2019]. 
 
 # Packages
 Make sure you have the following packages: "knitr", "rmarkdown", "bookdown", "formattable", "kableExtra", "dplyr", "magrittr", "prettydoc", "htmltools", "knitcitations", "bibtex", "devtools", "tidyverse"
-Not sure we'll actually need all this. Below are the code chunks for loading packages and setting up the document from Ch. 2:
+Not sure we'll actually need all this. Below are the code chunks for loading packages and setting up the document from
+
 
 ```{r packages, results = 'hide', warning = FALSE}
 ###~~~
@@ -79,6 +78,61 @@ knitr::write_bib(.packages(), file = "packages.bib")
 # The .packages() function returns invisibly the names of all packages loaded in the current R session (to see the output, use .packages(all.available = TRUE)). This ensures that all packages used in your code will have their citation entries written to the .bib file. This packages is then used in the Appendix to cite the code used
 ```
 
+# Data
+Download data from google drive. For this chapter, we will be working with a couple of datasets. Mike is working on consolidating some different exploratory analyses he did at different times over the last year. He wants to get them in the same place and make sure that they are reproducible. One set of data comes from the supplementary material of a paper. It is a csv file that was pulled from one of the author of the paper's github. The other dataset came from the r package `ebirdst`, which interfaces with data from the community science platform eBird. We'll start with a dataset of "encounter rates" calculated from eBird data, which are calculated as the percentage of checklists that include a particular species in a given area [@Schuetz_and_Johnston_2019]. This data has been analyzed for the United States by state, and Mike is getting ready to calculate encounter rates for species in Sonora, Mexico that are also found in Idaho. Before digging into the eBird data for Sonora, Mike wanted to get to know the dataset for Idaho so that he knows what species to look for in the Sonora data. Let's get that data ready. 
+
+#Load Data 
+
+```{r}
+library(tidyverse)
+
+#load csv file of data
+state_enc_rate <- read.csv("state.level.enc.rate.csv")
+
+summary(state_enc_rate)
+head(state_enc_rate)
+
+```
+
+There is more data in this dataframe than we need, so lets do some transformation to get the data where we want it. Specifically, we are going to drop a column we don't need, filter the data down to just Idaho, and filter for species with encounter rates higher than 50%. 
+
+```{r}
+#Get rid of uneccessary columns
+state_enc_rate_clean <- state_enc_rate %>%
+  select(
+    -query.volume.state #not needed for analysis
+  )
+
+view(state_enc_rate_clean)
+
+#filter to just Idaho
+state_enc_rate_clean_filtered <- state_enc_rate_clean %>%
+  filter(
+    state == "Idaho",
+    
+  )
+
+view(state_enc_rate_clean_filtered)
+
+#get rid of species with no encounter rate
+ID_enc_rate <- state_enc_rate_clean_filtered %>%
+  filter(encounter.state.normalized!=0
+  )
+
+#get ride of encounter rates below 50 to focus on "commonly encou
+ID_enc_rate <- ID_enc_rate %>%
+  filter(encounter.state.normalized > 50)
+
+#check size of final dataframe
+summary(ID_enc_rate)
+
+#make a table for markdown output
+kable(ID_enc_rate)
+
+ 
+```
+
+
 Setup Chunk Options:
 ```{r setup, results = 'hide', cache = FALSE}
 ### Chunk options: see http://yihui.name/knitr/options/ ###
@@ -97,8 +151,38 @@ opts_chunk$set(fig.path = "Figures_MS/", dev = c("png", "pdf"),
 opts_chunk$set(fig.pos = "H")
 ```
 
+
+# Identify the correct chunk commands to use in different situations.
+Although dynamically linking source code to markdown documents is the main goal of this chapter, sometimes it makes sense to include short code chunks directly into your markdown document. There are a variety of customizable options on how the code and its output are display in the final knitted document. We use code chunk arguments from the knitr package to choose the parts of our code chunks that are outputted in the final html document.
+
+
+## Load Data 
+
+First we are going to to do a little bit more data transformation to make a couple of objects of the Idaho encounter rate data grouped taxonomically for some descriptive statistics we will use later.
+
+```{r}
+
+
+#Pull passerines from ID encounter rates list
+passerine_enc_rate <- ID_enc_rate %>%
+  filter(common.name %in% c("American robin", "bank swallow", "black-billed magpie", "black-headed grosbeak", "Brewer's blackbird", "Bullock's oriole", "Cassin's finch", "Cassin's vireo", "cedar waxwing", "cliff swallow", "dark-eyed junco", "dusky flycatcher", "European starling", "evening grosbeak", "Hammond's flycatcher", "house finch", "lazuli bunting", "MacGillivray's warbler", "mountain chickadee", "northern rough-winged swallow", "olive-sided flycatcher", "pine siskin", "red crossbill", "red-winged blackbird", "sage thrasher", "song sparrow", "western kingbird", "western tanager", "western wood-pewee", "willow flycatcher", "yellow warbler"))
+
+waterfowl_enc_rate <- ID_enc_rate %>%
+  filter(common.name %in% c("American coot", "American wigeon", "cinnamon teal", "common goldeneye", "common merganser", "mallard", "ring-necked duck", "western grebe"))
+
+```
+
+
+
+## Identify the correct chunk commands to use in different situations.
+
+
+What do the chunk commands do:
+
 # Set up a chunk's outputs correctly.
 We use code chunk arguments from the knitr package to choose the parts of our code chunks that are outputted in the final html document.
+
+
 
 Code chunk arguments:
 
@@ -108,13 +192,35 @@ Code chunk arguments:
 + results = 'hide' hides results but not the code from the document
 + warning, message, error = FALSE hides warnings, messages, and error messages from the document
 
-For eval and echo, you can tell knitr which expressions in the chunk to include using numerical vectors. For example, eval = 1:2 will only include the 1st 2 expressions of code in the output document.
+
 
 ### Thought Excercise:
 Take 5 minutes to discuss with the person sitting next to you. Given the same chunk of analysis, how would you set up your chunk arguments when the document is being sent to your advisor for review versus being sent to a journal for publication? Then share with the class.
 
+# Dynamically include locally sourced modular analysis
+
+For eval and echo, you can tell knitr which expressions in the chunk to include using numerical vectors. For example, eval = 1:2 will only include the 1st 2 expressions of code in the output document.
+
+
+
+
+
+
+
+
+
 # Dynamically report variables in your text.
-Example of dynamic inline code pulling from two sources in the same sentence?
+Sometimes you may want to have R code or output appear inline with the rest of the markdown document. These can be static or dynamic.
+
+* **Static**: When you want to display a line of code in the markdown document.
+  * **Example**: Here is a line of code from data prep for this lesson: `ID_enc_rate <- state_enc_rate_clean_filtered %>%
+  filter(encounter.state.normalized!=0
+  )`
+
+- **Dynamic**: When you want to display output of a line of code inline with the rest of the markdown document.
+  - **Example**: The average encounter rate for the most commonly encountered passerines in Idaho is `r mean(passerine_enc_rate$encounter.state.normalized, na.rm = TRUE)`.
+
+
 
 # Source or code analysis through multiple methods.
 We will go over three ways to include analysis in your R Markdown document: locally sourced modular analysis, url-sourced modular analysis, and using a code chunk. We will also go over the scenarios in which you might use each method.
@@ -124,7 +230,7 @@ You may have previously written code locally stored on your computer that you wa
 
 Use the argument `include = FALSE` to run the analysis and produce objects that can still be used by other code chunks but will not show up in the output document.
 
-*make a separate r file that calculates means of passerine encounter rates, then source it here.*
+
 
 ## Url-sourced modular analysis
 Once you are further along in your research, you may want to make sure your file in publicly accessible to ensure reproducibility. You can host your file in a GitHub repository and use the source_url command from the devtools package to call it.
@@ -146,28 +252,188 @@ What code chunk arguments should we use if we want to figure to show up in the o
 # Ensure results are reproducibly random
 When an analysis produces simulations, a random number generator is generally used so that others can replicate your results. For this tutorial, we will do an exercise to learn the importance of using the set.seed command to ensure replicability.
 
-### Excercise:
+### Exercise:
 You and the person next to you use the same distribution variables but diff vs. same set.seed. Do you get the same result? What about when you use the same set.seed?  *Insert set.seeds here.*
+
+```{r, cache=TRUE}
+# Set seed as 125
+set.seed(125)
+
+# Draw 1000 numbers
+Draw2 <- rnorm(1000, mean = 0, sd = 2) # Summarize Draw1
+
+# Draw 1000 other numbers
+Draw1 <- rnorm(1000, mean=5, sd=1.5)
+
+summary(Draw2)
+
+plot(Draw2)
+
+plot(Draw1)
+
+model <- lm(Draw1~Draw2)
+
+plot(model)
+
+# Set seed as 150
+set.seed(150)
+
+# Draw 1000 numbers
+Draw3 <- rnorm(1000, mean = 0, sd = 2) # Summarize Draw1
+
+# Draw 1000 other numbers
+Draw4 <- rnorm(1000, mean=5, sd=1.5)
+
+summary(Draw2)
+
+plot(Draw2)
+
+plot(Draw1)
+
+model1 <- lm(Draw3~Draw4)
+
+plot(model)
+
+# Save sample
+save(model, file = "model.RData")
+```
+
 
 # Run computationally intensive analysis efficiently.
 When an analysis is too computationally intensive, knowing how to use the cache functions from knitR is helpful. Caching a code chunk will store the results of its analysis in a cache folder.
 
 To cache a code chunk, use the argument `cache = TRUE`. This will ensure the chunk will only run if the chunk's contents or options change. 
 
+
+```{r Histogram}
+
+# Load Sample
+load(file = "model.RData" )
+
+summary(model)
+
+plot(model)
+```
+
+
 However, subsequent chunks will not be able to access objects created by the chunks or any packages loaded in it (all packages should be loaded in their own chunk anyways though), and the cached chunk will not run if a previous chunk with code it depended on changes. You can solve this last problem with the argument dependson. A chunk with the dependson argument will rerun if the specified chunk is also rerun. To specify a chunk, use a vector of their labels or their number order from the start of the document. For example, `dependson = c(2,3)` will rerun the cached chunk if the 2nd and 3rd chunks of the document are also rerun. You can also save objects created by a cached chunk to a separate RData file and load that in subsequent chunks with the load command.
 
 ### Excercise
 Try `cache = TRUE` on the code chunk from earlier. Knit the document. What happens? Run the document again. What happens?
 
+Here is some code making figures showing migration chronology for American Avocet in Idaho and Sonora
+
+```{r}
+#load packages
+library(ggplot2)
+library(sf)
+library(raster)
+library(terra)
+library(patchwork)
+library(tigris)
+library(rnaturalearth)
+library(ebirdst)
+
+# Get the state boundary for Sonora, Mexico
+region_boundary <- ne_states(iso_a2 = "MX", returnclass = "sf") |>
+  filter(name == "Sonora")
+
+# download data if they haven't already been downloaded
+# only weekly 3km relative abundance, median and confidence limits
+ebirdst_download_status("ameavo", 
+                        pattern = "abundance_(median|upper|lower)_3km")
+
+# load the median weekly relative abundance and lower/upper confidence limits
+abd_median <- load_raster("ameavo", product = "abundance", metric = "median")
+abd_lower <- load_raster("ameavo", product = "abundance", metric = "lower")
+abd_upper <- load_raster("ameavo", product = "abundance", metric = "upper")
+
+# project region boundary to match raster data
+region_boundary_proj <- st_transform(region_boundary, st_crs(abd_median))
+
+# extract values within region and calculate the mean
+abd_median_region <- extract(abd_median, region_boundary_proj,
+                             fun = "mean", na.rm = TRUE, ID = FALSE)
+abd_lower_region <- extract(abd_lower, region_boundary_proj,
+                            fun = "mean", na.rm = TRUE, ID = FALSE)
+abd_upper_region <- extract(abd_upper, region_boundary_proj,
+                            fun = "mean", na.rm = TRUE, ID = FALSE)
+
+# transform to data frame format with rows corresponding to weeks
+chronology_SO <- data.frame(week = as.Date(names(abd_median)),
+                            median = as.numeric(abd_median_region),
+                            lower = as.numeric(abd_lower_region),
+                            upper = as.numeric(abd_upper_region))
+
+
+#Make a graph 
+AMAV_SO <- ggplot(chronology_SO) +
+  aes(x = week, y = median) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), fill = "green", alpha = 0.4) +
+  geom_line(color = "purple") +
+  scale_x_date(date_labels = "%b", date_breaks = "1 month") +
+  theme_classic() +
+  labs(x = "Week",
+       y = "Mean relative abundance in Sonora",
+       title = "Migration chronology for American Avocet in Sonora")
+
+AMAV_SO  
+
+```
+
+Here is the code for making the same figure for Idaho:
+
+```{r}
+
+region_boundary <- ne_states(iso_a2 = "US") |> 
+  filter(name == "Idaho")
+
+# download data if they haven't already been downloaded
+# only weekly 3km relative abundance, median and confidence limits
+ebirdst_download_status("ameavo", 
+                        pattern = "abundance_(median|upper|lower)_3km")
+
+# load the median weekly relative abundance and lower/upper confidence limits
+abd_median <- load_raster("ameavo", product = "abundance", metric = "median")
+abd_lower <- load_raster("ameavo", product = "abundance", metric = "lower")
+abd_upper <- load_raster("ameavo", product = "abundance", metric = "upper")
+
+# project region boundary to match raster data
+region_boundary_proj <- st_transform(region_boundary, st_crs(abd_median))
+
+# extract values within region and calculate the mean
+abd_median_region <- extract(abd_median, region_boundary_proj,
+                             fun = "mean", na.rm = TRUE, ID = FALSE)
+abd_lower_region <- extract(abd_lower, region_boundary_proj,
+                            fun = "mean", na.rm = TRUE, ID = FALSE)
+abd_upper_region <- extract(abd_upper, region_boundary_proj,
+                            fun = "mean", na.rm = TRUE, ID = FALSE)
+
+# transform to data frame format with rows corresponding to weeks
+chronology_ID <- data.frame(week = as.Date(names(abd_median)),
+                            median = as.numeric(abd_median_region),
+                            lower = as.numeric(abd_lower_region),
+                            upper = as.numeric(abd_upper_region))
+
+
+
+AMAV_ID <- ggplot(chronology_ID) +
+  aes(x = week, y = median) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), fill = "green", alpha = 0.4) +
+  geom_line(color = "purple") +
+  scale_x_date(date_labels = "%b", date_breaks = "1 month") +
+  theme_classic() +
+  labs(x = "Week",
+       y = "Mean relative abundance in Washington",
+       title = "Migration chronology for American Avocet in Idaho")
+
+AMAV_ID
+
+```
+
 *should we try to do the rdata thing?*
 
-# Misc notes. dunno if we need to keep this:
-+ Identify appropriate distribution for categorical data
-+ Make simulated data set
-+ Define distribution
-+ Define sample size
-+ Define variance
-+ Fit model in brms
+
 
 # References
 
