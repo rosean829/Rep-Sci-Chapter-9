@@ -277,6 +277,8 @@ To cache a code chunk, use the argument `cache = TRUE`. This will ensure the chu
 ### Excercise
 Try `cache = TRUE` on the code chunk from earlier. Knit the document. What happens? Run the document again. What happens?
 
+### Excercise
+However, subsequent chunks will not be able to access objects created by the chunks or any packages loaded in it (all packages should be loaded in their own chunk anyways though), and the cached chunk will not run if a previous chunk with code it depended on changes. You can solve this last problem with the argument dependson. A chunk with the dependson argument will rerun if the specified chunk is also rerun. To specify a chunk, use a vector of their labels or their number order from the start of the document. For example, `dependson = c(2,3)` will rerun the cached chunk if the 2nd and 3rd chunks of the document are also rerun. You can also save objects created by a cached chunk to a separate RData file and load that in subsequent chunks with the load command. The last line of code in our previous chunk was to save the output of the cached chunk in an RData file. In the next chunk, we will call the output without running the last chunk:
 
 ```{r Histogram}
 
@@ -287,9 +289,6 @@ summary(model)
 
 plot(model)
 ```
-
-
-However, subsequent chunks will not be able to access objects created by the chunks or any packages loaded in it (all packages should be loaded in their own chunk anyways though), and the cached chunk will not run if a previous chunk with code it depended on changes. You can solve this last problem with the argument dependson. A chunk with the dependson argument will rerun if the specified chunk is also rerun. To specify a chunk, use a vector of their labels or their number order from the start of the document. For example, `dependson = c(2,3)` will rerun the cached chunk if the 2nd and 3rd chunks of the document are also rerun. You can also save objects created by a cached chunk to a separate RData file and load that in subsequent chunks with the load command.
 
 
 Here is some code making figures showing migration chronology for American Avocet in Idaho and Sonora
