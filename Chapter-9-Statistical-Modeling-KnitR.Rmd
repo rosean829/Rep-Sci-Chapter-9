@@ -34,7 +34,7 @@ Through this tutorial, students will learn to:
 Make sure you have the following packages: "knitr", "rmarkdown", "bookdown", "formattable", "kableExtra", "dplyr", "magrittr", "prettydoc", "htmltools", "knitcitations", "bibtex", "devtools", "tidyverse", "ebirdst", "sf", "raster", "terra", "patchwork", "tigris", "rnaturalearth", "ggplot2"," rnaturalearthhires". Below are the code chunks for loading packages and setting up the document from Ch. 2:
 
 
-```{r packages, results = 'hide', warning = FALSE}
+```{r packages, results = 'hide', fig.show='hide', warning = FALSE, message = FALSE}
 ###~~~
 # Load R packages
 ###~~~
@@ -78,7 +78,7 @@ knitr::write_bib(.packages(), file = "packages.bib")
 ```
 
 Setup Chunk Options:
-```{r setup, results = 'hide', cache = FALSE}
+```{r setup, results = 'hide', fig.show='hide', cache = FALSE, message = FALSE}
 ### Chunk options: see http://yihui.name/knitr/options/ ###
 ### Text output
 opts_chunk$set(echo = TRUE, warning = TRUE, message = TRUE, include = TRUE)
@@ -100,7 +100,7 @@ Download data from google drive. For this chapter, we will be working with a cou
 
 #Load Data 
 
-```{r}
+```{r, results = 'hide', fig.show='hide', message = FALSE}
 library(tidyverse)
 
 #load csv file of data
@@ -113,7 +113,7 @@ head(state_enc_rate)
 
 There is more data in this dataframe than we need, so lets do some transformation to get the data where we want it. Specifically, we are going to drop a column we don't need, filter the data down to just Idaho, and filter for species with encounter rates higher than 50%. 
 
-```{r}
+```{r, results = 'hide', fig.show='hide', message = FALSE}
 #Get rid of uneccessary columns
 state_enc_rate_clean <- state_enc_rate %>%
   dplyr::select(
@@ -163,6 +163,7 @@ Code chunk arguments:
 + echo = FALSE hides code but not results from the document
 + results = 'hide' hides results but not the code from the document
 + warning, message, error = FALSE hides warnings, messages, and error messages from the document
++ fig.show = 'hide' hides figures specifically from the final output document
 
 For eval and echo, you can tell knitr which expressions in the chunk to include using numerical vectors. For example, eval = 1:2 will only include the 1st 2 expressions of code in the output document.
 
@@ -179,7 +180,7 @@ What code chunk arguments should we use if we want to figure to show up in the o
 
 First we are going to to do a little bit more data transformation to make a couple of objects of the Idaho encounter rate data grouped taxonomically for some descriptive statistics we will use later.
 
-```{r}
+```{r, results = 'hide', fig.show='hide', message = FALSE}
 
 
 #Pull passerines from ID encounter rates list
@@ -225,7 +226,7 @@ When an analysis produces simulations, a random number generator is generally us
 ### Exercise:
 You and the person next to you use the same distribution variables but diff vs. same set.seed. Do you get the same result? What about when you use the same set.seed? 
 
-```{r, cache=TRUE, results = 'hide'}
+```{r, cache=TRUE, results = 'hide', fig.show='hide', message = FALSE}
 ## The person on the left of each pair will set seed as 125
 set.seed(125)
 
@@ -281,7 +282,7 @@ Try `cache = TRUE` on the code chunk from earlier. Knit the document. What happe
 ### Excercise
 However, subsequent chunks will not be able to access objects created by the chunks or any packages loaded in it (all packages should be loaded in their own chunk anyways though), and the cached chunk will not run if a previous chunk with code it depended on changes. You can solve this last problem with the argument dependson. A chunk with the dependson argument will rerun if the specified chunk is also rerun. To specify a chunk, use a vector of their labels or their number order from the start of the document. For example, `dependson = c(2,3)` will rerun the cached chunk if the 2nd and 3rd chunks of the document are also rerun. You can also save objects created by a cached chunk to a separate RData file and load that in subsequent chunks with the load command. The last line of code in our previous chunk was to save the output of the cached chunk in an RData file. In the next chunk, we will call the output without running the last chunk:
 
-```{r Histogram, results = 'hide'}
+```{r Histogram, results = 'hide', fig.show='hide', message = FALSE}
 
 # Load Sample
 load(file = "model.RData" )
@@ -294,7 +295,7 @@ plot(model)
 
 Here is some code making figures showing migration chronology for American Avocet in Idaho and Sonora
 
-```{r}
+```{r, results = 'hide', fig.show='hide', message = FALSE}
 #load packages
 library(ggplot2)
 library(sf)
@@ -308,6 +309,9 @@ library(ebirdst)
 # Get the state boundary for Sonora, Mexico
 region_boundary <- ne_states(iso_a2 = "MX", returnclass = "sf") |>
   filter(name == "Sonora")
+
+#Allows to access data in ebirst package
+set_ebirdst_access_key("aj6vlciqa1gd", overwrite = TRUE)
 
 # download data if they haven't already been downloaded
 # only weekly 3km relative abundance, median and confidence limits
@@ -354,7 +358,7 @@ AMAV_SO
 
 Here is the code for making the same figure for Idaho:
 
-```{r}
+```{r, results = 'hide', fig.show='hide', message = FALSE}
 
 region_boundary <- ne_states(iso_a2 = "US") |> 
   filter(name == "Idaho")
