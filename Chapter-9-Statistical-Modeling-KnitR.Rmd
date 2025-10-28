@@ -31,7 +31,7 @@ Through this tutorial, students will learn to:
 
 
 # Packages
-Make sure you have the following packages: "knitr", "rmarkdown", "bookdown", "formattable", "kableExtra", "dplyr", "magrittr", "prettydoc", "htmltools", "knitcitations", "bibtex", "devtools", "tidyverse", "ebirdst", "sf", "raster", "terra", "patchwork", "tigris", "rnaturalearth", "ggplot2". Below are the code chunks for loading packages and setting up the document from Ch. 2:
+Make sure you have the following packages: "knitr", "rmarkdown", "bookdown", "formattable", "kableExtra", "dplyr", "magrittr", "prettydoc", "htmltools", "knitcitations", "bibtex", "devtools", "tidyverse", "ebirdst", "sf", "raster", "terra", "patchwork", "tigris", "rnaturalearth", "ggplot2"," rnaturalearthhires". Below are the code chunks for loading packages and setting up the document from Ch. 2:
 
 
 ```{r packages, results = 'hide', warning = FALSE}
@@ -40,7 +40,7 @@ Make sure you have the following packages: "knitr", "rmarkdown", "bookdown", "fo
 ###~~~
 #Create a vector w/ the required R packages
 # --> If you have a new dependency, don't forget to add it in this vector
-pkg <- c("knitr", "rmarkdown", "bookdown", "formattable", "kableExtra", "dplyr", "magrittr", "prettydoc", "htmltools", "knitcitations", "bibtex", "devtools", "tidyverse", "ebirdst", "sf", "raster", "terra", "patchwork", "tigris", "rnaturalearth", "ggplot2")
+pkg <- c("knitr", "rmarkdown", "bookdown", "formattable", "kableExtra", "dplyr", "magrittr", "prettydoc", "htmltools", "knitcitations", "bibtex", "devtools", "tidyverse", "ebirdst", "sf", "raster", "terra", "patchwork", "tigris", "rnaturalearth", "ggplot2", "rnaturalearthhires")
 
 ##~~~
 #2. Check if pkg are already installed on your computer
@@ -116,7 +116,7 @@ There is more data in this dataframe than we need, so lets do some transformatio
 ```{r}
 #Get rid of uneccessary columns
 state_enc_rate_clean <- state_enc_rate %>%
-  select(
+  dplyr::select(
     -query.volume.state #not needed for analysis
   )
 
@@ -225,26 +225,27 @@ When an analysis produces simulations, a random number generator is generally us
 ### Exercise:
 You and the person next to you use the same distribution variables but diff vs. same set.seed. Do you get the same result? What about when you use the same set.seed? 
 
-```{r, cache=TRUE}
-# Set seed as 125
+```{r, cache=TRUE, results = 'hide'}
+## The person on the left of each pair will set seed as 125
 set.seed(125)
 
 # Draw 1000 numbers
-Draw2 <- rnorm(1000, mean = 0, sd = 2) # Summarize Draw1
+Draw1 <- rnorm(1000, mean = 0, sd = 2) # Summarize Draw1
 
 # Draw 1000 other numbers
-Draw1 <- rnorm(1000, mean=5, sd=1.5)
+Draw2 <- rnorm(1000, mean=5, sd=1.5)
 
-summary(Draw2)
-
+# Plot Draw1 and Draw2
 plot(Draw2)
 
 plot(Draw1)
 
+# Create a regression with Draw1 and Draw2, then plot it.
 model <- lm(Draw1~Draw2)
 
 plot(model)
 
+## The person on the right of each pair will set seed as 150
 # Set seed as 150
 set.seed(150)
 
@@ -254,17 +255,17 @@ Draw3 <- rnorm(1000, mean = 0, sd = 2) # Summarize Draw1
 # Draw 1000 other numbers
 Draw4 <- rnorm(1000, mean=5, sd=1.5)
 
-summary(Draw2)
+# Plot both Draw3 and Draw4
+plot(Draw3)
 
-plot(Draw2)
+plot(Draw4)
 
-plot(Draw1)
-
+# Create a regression from Draw3 and Draw4, then plot it.
 model1 <- lm(Draw3~Draw4)
 
-plot(model)
+plot(model1)
 
-# Save sample
+## Save the 1st regression in its own Rdata file (this will be relevant in a later section)
 save(model, file = "model.RData")
 ```
 
@@ -280,7 +281,7 @@ Try `cache = TRUE` on the code chunk from earlier. Knit the document. What happe
 ### Excercise
 However, subsequent chunks will not be able to access objects created by the chunks or any packages loaded in it (all packages should be loaded in their own chunk anyways though), and the cached chunk will not run if a previous chunk with code it depended on changes. You can solve this last problem with the argument dependson. A chunk with the dependson argument will rerun if the specified chunk is also rerun. To specify a chunk, use a vector of their labels or their number order from the start of the document. For example, `dependson = c(2,3)` will rerun the cached chunk if the 2nd and 3rd chunks of the document are also rerun. You can also save objects created by a cached chunk to a separate RData file and load that in subsequent chunks with the load command. The last line of code in our previous chunk was to save the output of the cached chunk in an RData file. In the next chunk, we will call the output without running the last chunk:
 
-```{r Histogram}
+```{r Histogram, results = 'hide'}
 
 # Load Sample
 load(file = "model.RData" )
