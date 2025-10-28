@@ -269,6 +269,16 @@ Once you are further along in your research, you may want to make sure your file
 
 We have set up a pre-made GitHub file for this section.
 
+```{r}
+
+
+source_url("https://raw.githubusercontent.com/rosean829/Rep-Sci-Chapter-9/main/03_linked_scripts/Idaho_AMAV_migration_chronology.R")
+
+AMAV_ID
+
+```
+
+
 
 # Ensure results are reproducibly random
 When an analysis produces simulations, a random number generator is generally used so that others can replicate your results. For this tutorial, we will do an exercise to learn the importance of using the set.seed command to ensure replicability.
