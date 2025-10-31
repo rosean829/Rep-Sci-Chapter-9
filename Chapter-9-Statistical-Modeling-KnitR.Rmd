@@ -182,7 +182,7 @@ For `eval` and `echo`, you can tell *knitr* which expressions in the chunk to in
 Take 5 minutes to discuss with the person sitting next to you. Imagine you have an R markdown document with chunks of analysis. You are now sending just the html document outputted from it to your PI for review. What chunk arguments might you set? What if you are publishing the final version of that html document? Now share with the class.
 
 ## Analysis in a code chunk
-Code chunks are best used when the code is simple or short. To demonstrate analysis in a code chunk for this section, we are going to to do a little bit more data transformation to make a couple of objects of the Idaho encounter rate data grouped taxonomically for some descriptive statistics we will use later. By the end of this tutorial, we will create an analysis to compare the mean encounter rate of songbirds and waterfowl in the Idaho dataset.
+Code chunks are best used when the code is simple or short. To demonstrate analysis in a code chunk for this section, we are going to to do a little bit more data transformation to make a couple of objects of the Idaho encounter rate data grouped taxonomically for some descriptive statistics we will use later. 
 
 
 ```{r, results = 'hide', fig.show='hide', message = FALSE}
