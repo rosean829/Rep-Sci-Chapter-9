@@ -15,10 +15,10 @@ csl: AmJBot.csl
 In this tutorial, we will learn **how to set up a R Markdown document for reproducible statistical analysis/modeling,** primarily using functions and syntax from the *KnitR* package. Please ensure you have the Chapter 9 folder downloaded, as the way this .rmd runs depends on the current file structure.
 
 ## Aim
-In this tutorial, you will learn methods to ensure your analysis is ***reproducible from the moment you start coding to the moment it is published.** You will learn how to **properly set up pipelines** to rerun analysis and present results every time you knit, different methods to **dynamically connect data gathering and source code** to your output documents, and how to keep markdown documents **up to date without overloading your computer** when your analysis is computationally intensive.
+In this tutorial, you will learn methods to ensure your analysis is **reproducible from the moment you start coding to the moment it is published.** You will learn how to **properly set up pipelines** to rerun analysis and present results every time you knit, different methods to **dynamically connect data gathering and source code** to your output documents, and how to keep markdown documents **up to date without overloading your computer** when your analysis is computationally intensive.
 
 ## Why is this important?
-Coding is hard. It takes a long time, and you'll likely have to go back to the same analysis multiple times to tweak and change things. It is important to **setup a good workflow early** to ensure you're not scrambling to make your research reproducible at the end of the process. You'll be saving yourself a lot of time if your analysis is reproducible and your results presented **every time you knit your document.**
+Coding is hard. It takes a long time, and you'll likely have to go back to the same analysis multiple times to tweak and change things. It is important to **setup a good workflow early** to ensure you're not scrambling to make your research reproducible at the end of the process. You'll be saving yourself a lot of time if your analysis is reproducible and your results presented the way you want them to be **every time you knit your document.**
 
 # Learning Outcomes
 Through this tutorial, students will learn to:
@@ -100,12 +100,12 @@ opts_chunk$set(fig.pos = "H")
 ```
 
 # Data
-Download data from google drive. For this chapter, we will be working with a couple of datasets. Mike is working on consolidating some different exploratory analyses he did at different times over the last year. He wants to get them in the same place and make sure that they are reproducible. One set of data comes from the supplementary material of a paper [@Schuetz_and_Johnston_2019]. It is a csv file that was pulled from one of the author of the paper's github. The other dataset came from the r package `ebirdst`, which interfaces with data from the community science platform eBird. We'll start with a dataset of "encounter rates" calculated from eBird data, which are calculated as the percentage of checklists that include a particular species in a given area. This data has been analyzed for the United States by state, and Mike is getting ready to calculate encounter rates for species in Sonora, Mexico that are also found in Idaho. Before digging into the eBird data for Sonora, Mike wanted to get to know the dataset for Idaho so that he knows what species to look for in the Sonora data. Let's get that data ready. 
+The data for this tutorial should be in the Ch. 9 folder you downloaded. For this chapter, we will be working with a couple of datasets. Mike is working on consolidating some different exploratory analyses he did at different times over the last year. He wants to get them in the same place and make sure that they are reproducible. One set of data comes from the supplementary material of a paper [@Schuetz_and_Johnston_2019]. It is a csv file that was pulled from one of the authors of the paper's github. The other dataset came from the r package `ebirdst`, which interfaces with data from the community science platform eBird. We'll start with a dataset of "encounter rates" calculated from eBird data, which are calculated as the percentage of checklists that include a particular species in a given area. This data has been analyzed for the United States by state, and Mike is getting ready to calculate encounter rates for species in Sonora, Mexico that are also found in Idaho. Before digging into the eBird data for Sonora, Mike wanted to get to know the dataset for Idaho so that he knows what species to look for in the Sonora data. Let's get that data ready. 
 
 ## Load Data 
-First, please set your working directory to the Chapter 9 folder that you loaded on your computer. You can do this by selecting the working directory through the **session** tab menu, or using the command `setwd(*your file path here*`). Now we are going to to do a little bit more data transformation to make a couple of objects of the Idaho encounter rate data grouped taxonomically for some descriptive statistics we will use later.
+First, please set your working directory to the Chapter 9 folder that you loaded on your computer. You can do this by selecting the working directory through the *session* tab menu, then choosing *to source file location*, or using the command `setwd(*your file path here*`). Now we are going to to do a little bit more data transformation to make a couple of objects of the Idaho encounter rate data grouped taxonomically for some descriptive statistics we will use later.
 
-```{r, results = 'hide', fig.show='hide', message = FALSE}
+```{r, fig.show='hide', message = FALSE}
 
 library("tidyverse")
 
@@ -162,12 +162,12 @@ write.csv(ID_enc_rate, file = "02_Clean_data/ID_enc_rate.csv",
 
 
 # Analyze data in a code chunk reproducibly
-Although dynamically linking source code to markdown documents is the main goal of this chapter, sometimes it makes sense to include short code chunks directly into your markdown document. There are a variety of customizable options on how the code and its output are display in the final knitted document. We use code chunk arguments from the knitr package to choose the parts of our code chunks that are outputted in the final html document.
+Although dynamically linking source code to markdown documents is the main goal of this chapter, sometimes it makes sense to include short code chunks directly into your markdown document. There are a variety of customizable options on how the code and its output are displayed in the final knitted document. We use code chunk arguments from the *knitr* package to choose the parts of our code chunks that are outputted in the final html document.
 
 ## Set up a chunk's outputs correctly
-First, we will learn how to set up a code chunk. We use code chunk arguments from the *knitr* package to choose the parts of our code chunks that are outputted in the final html document.
+First, we will learn how to set up a code chunk. We use code chunk options/arguments from the *knitr* package to choose the parts of our code chunks that are outputted in the final html document.
 
-Code chunk arguments:
+Code chunk options/arguments:
 
 + `include = FALSE` hides code and results from the output document (html in our case), but code will still run
 + `eval = FALSE` includes code from the document without running it
@@ -179,12 +179,10 @@ Code chunk arguments:
 For `eval` and `echo`, you can tell *knitr* which expressions in the chunk to include using numerical vectors. For example, `eval = 1:2` will only include the 1st 2 expressions of code in the output document.
 
 ### Thought Excercise:
-Take 5 minutes to discuss with the person sitting next to you. Given the same chunk of analysis, how would you set up your chunk arguments when the document is being sent to your advisor for review versus being sent to a journal for publication? Then share with the class.
+Take 5 minutes to discuss with the person sitting next to you. Imagine you have an R markdown document with chunks of analysis. You are now sending just the html document outputted from it to your PI for review. What chunk arguments might you set? What if you are publishing the final version of that html document? Now share with the class.
 
 ## Analysis in a code chunk
-For this tutorial, we will create a code chunk to compare the mean encounter rate of songbirds and waterfowl in the Idaho dataset. 
-
-First we are going to to do a little bit more data transformation to make a couple of objects of the Idaho encounter rate data grouped taxonomically for some descriptive statistics we will use later.
+Code chunks are best used when the code is simple or short. To demonstrate analysis in a code chunk for this section, we are going to to do a little bit more data transformation to make a couple of objects of the Idaho encounter rate data grouped taxonomically for some descriptive statistics we will use later. By the end of this tutorial, we will create an analysis to compare the mean encounter rate of songbirds and waterfowl in the Idaho dataset.
 
 
 ```{r, results = 'hide', fig.show='hide', message = FALSE}
@@ -213,14 +211,17 @@ Sometimes you may want to have R code or output appear inline with the rest of t
 
 
 # Source or code analysis through multiple methods
-We will go over two other ways to include analysis in your R Markdown document: locally sourced modular analysis and url-sourced modular analysis. We will also go over the scenarios in which you might use each method.
+Bogging down markdown documents with lots of long code chunks can impair readibility. This is where modular analysis comes in. Modular analysis is a way to dynamically included analysis in your .rmd by keeping script for an analysis in a separate file and then linking/calling it in the .rmd. Changing the script file will change the output in the .rmd, and that output can be used for further analysis in the .rmd. Other times where it might be better to link to a script that contains analysis code include: needing the same code for multiple different output documents, making it easier for other researchers to look for specific parts of your analysis. We will go over two ways to dynamically include analysis in your R Markdown document: locally sourced modular analysis and url-sourced modular analysis.  
 
-Here is a string of code that was used to produce a figure. This is also made from ebird data, but instead of starting with someone else's caclulations, we are interacting with the package *ebirdst*, which pulls data Cornell's eBird database. Bogging down markdown documents with lots of long code chunks can impair readibility. There also might be times where it is better to link to a script that contains analysis code, such as: needing the same code for multiple different output documents or to make it easier for other researchers to look for specific parts of your analysis.
+## Locally sourced modular analysis
 
-(For the next exercise, we will use the following piece of code)
+We can link to previously written code locally stored on your computer that you want to pull for an analysis. To do so, we will save that code in its own R file and use the `source` command from *knitR* to call it. This method is best utilized in the early stages of your research, as others won't have access to your local files. 
+
+Here is a string of code that was used to produce a figure. This is also made from ebird data, but instead of starting with someone else's caclulations, we are interacting with the package *ebirdst*, which pulls data Cornell's eBird database. 
+
 
 ```{r, message=FALSE, eval = FALSE}
-# Note eval = FALSE. This code chunk won't actually run. We are going to use an r file with the same code for the next exercise.
+# Note eval = FALSE. This code chunk won't actually run. We are going to use an r file with the same code for this exercise.
 #load packages
 library(ggplot2)
 library(sf)
@@ -281,8 +282,8 @@ AMAV_SO
 
 ```
 
-## Locally sourced modular analysis
-We can link to previously written code locally stored on your computer that you want to pull for an analysis. To do so, we will save that code in its own R file and use the `source` command from *knitR* to call it. This is best in the early stages of your research, as others won't have access to your local files. We have put the code from the code chunk above into a separate r file in the Ch. 9 folder. Now we are going to call it with the `source` function.
+## Exercise
+We have put the code from the code chunk above into a separate r file in the Ch. 9 folder. Now we are going to call it with the `source` function. Try running the following code chunk:
 
 ```{r}
 # Run main analysis
@@ -290,9 +291,6 @@ source("03_linked_scripts/Sonora_AMAV_migration_chron.R")
 
 AMAV_SO
 ```
-
-### Refresher
-You can use the argument `include = FALSE` to run the analysis and produce objects that can still be used by other code chunks but will not show up in the output document.
 
 
 ## Url-sourced modular analysis
@@ -348,7 +346,8 @@ AMAV_ID
 
 ```
 
-Use the `source_url` command from the *devtools* package.
+## Exercise
+Use the `source_url` command from the *devtools* package to call the file. Run the following code chunk. 
 ```{r}
 
 
@@ -359,14 +358,15 @@ AMAV_ID
 ```
 
 
-
 # Ensure results are reproducibly random
 When an analysis produces simulations, a random number generator is generally used so that others can replicate your results. For this tutorial, we will do an exercise to learn the importance of using the `set.seed` command to ensure replicability.
 
 ### Exercise:
 You and the person next to you use the same distribution variables but diff vs. same `set.seed`. Do you get the same result? What about when you use the same `set.seed`? 
 
-```{r, cache=TRUE, results = 'hide', fig.show='hide', message = FALSE}
+Have the person sitting on the left run the following simple regression with `set.seed(125)`. The person on the right will run the next code chunk. Compare your results. 
+
+```{r, cache=TRUE, message = FALSE}
 ## The person on the left of each pair will set seed as 125
 set.seed(125)
 
@@ -385,6 +385,13 @@ plot(Draw1)
 model <- lm(Draw1~Draw2)
 
 plot(model)
+
+## Save the 1st regression in its own Rdata file (this will be relevant in a later section)
+save(model, file = "model.RData")
+```
+
+The person sitting on the right will run the following code chunk (same code as the chunk above but with `set.seed(150)`). After comparing your results with your partner, run the `set.seed(125)` chunk. Compare your results.
+```{r, cache=TRUE, message = FALSE}
 
 ## The person on the right of each pair will set seed as 150
 # Set seed as 150
@@ -405,24 +412,21 @@ plot(Draw4)
 model1 <- lm(Draw3~Draw4)
 
 plot(model1)
-
-## Save the 1st regression in its own Rdata file (this will be relevant in a later section)
-save(model, file = "model.RData")
 ```
 
 
 # Run computationally intensive analysis efficiently
-When an analysis is too computationally intensive, knowing how to use the cache functions from *knitR* is helpful. Caching a code chunk will store the results of its analysis in a cache folder.
+When an analysis is too computationally intensive, knowing how to use the cache functions from *knitR* is helpful. To cache a code chunk, use the argument `cache = TRUE`. A cached chunk will only run if the chunk's contents or options change. 
 
-To cache a code chunk, use the argument `cache = TRUE`. This will ensure the chunk will only run if the chunk's contents or options change. 
-
-### Excercise
-Try `cache = TRUE` on the code chunk from earlier. Knit the document. What happens? Run the document again. What happens?
+However, subsequent chunks will not be able to access objects created by the cached chunks or any packages loaded in it (all packages should be loaded in their own chunk anyways though), and the cached chunk will not run if a previous chunk with code it depended on changes. You can solve this last problem with the argument `dependson`. A chunk with the `dependson` argument will rerun if the specified chunk is also rerun. To specify a chunk, use a vector of their labels or their number order from the start of the document. For example, `dependson = c(2,3)` will rerun the cached chunk if the 2nd and 3rd chunks of the document are also rerun. 
 
 ### Excercise
-However, subsequent chunks will not be able to access objects created by the cached chunks or any packages loaded in it (all packages should be loaded in their own chunk anyways though), and the cached chunk will not run if a previous chunk with code it depended on changes. You can solve this last problem with the argument `dependson`. A chunk with the `dependson` argument will rerun if the specified chunk is also rerun. To specify a chunk, use a vector of their labels or their number order from the start of the document. For example, `dependson = c(2,3)` will rerun the cached chunk if the 2nd and 3rd chunks of the document are also rerun. You can also save objects created by a cached chunk to a separate .RData file and load that in subsequent chunks with the `load` command if you want to keep using the outputs of the cached chunk without running the chunk every time. The last line of code in our previous chunk saved its output in an .RData file. In the next chunk, we will call the output without running the last chunk:
+The 2 code chunks from earlier have the argument `cache = TRUE`. If you haven't knit the document yet, knit it now. If you have, do you remember the load time for the knit? Now that you've knit once, knit the document again. What happens to the knit time?
 
-```{r Histogram, results = 'hide', fig.show='hide', message = FALSE}
+### Excercise
+You can also save objects created by a cached chunk to a separate .RData file and load that in subsequent chunks with the `load` command if you want to keep using the outputs of the cached chunk even when the chunk doesn't run. The last line of code in one of the previous chunks (`save(model, file = "model.RData")`) saved its output in an .RData file. In the next chunk, we will call and then plot the output without running that chunk:
+
+```{r Histogram, message = FALSE}
 
 # Load Sample
 load(file = "model.RData" )
