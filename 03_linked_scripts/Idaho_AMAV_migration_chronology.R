@@ -1,5 +1,5 @@
 region_boundary <- ne_states(iso_a2 = "US") |> 
-  filter(name == "Idaho")
+  filter(name == "Washington")
 
 # download data if they haven't already been downloaded
 # only weekly 3km relative abundance, median and confidence limits
@@ -38,6 +38,6 @@ AMAV_ID <- ggplot(chronology_ID) +
   theme_classic() +
   labs(x = "Week",
        y = "Mean relative abundance in Washington",
-       title = "Migration chronology for American Avocet in Idaho")
+       title = "Migration chronology for American Avocet in Washington")
 
 AMAV_ID
